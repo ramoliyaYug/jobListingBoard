@@ -1,0 +1,71 @@
+{% extends "jobs/base.html" %}
+
+{% block title %}{{ job.title }} - Job Board{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'job_list' %}" style="color: #3498db; text-decoration: none;">← Back to Listings</a>
+</div>
+
+<div class="card" style="border-left: 4px solid #3498db;">
+    <div class="job-header" style="margin-bottom: 1.5rem;">
+        <div>
+            <h1 class="job-title" style="margin-bottom: 0.5rem;">{{ job.title }}</h1>
+            <p style="font-size: 1.1rem; color: #7f8c8d; margin: 0;">{{ job.company }}</p>
+        </div>
+        <span class="job-badge">{{ job.get_job_type_display }}</span>
+    </div>
+    
+    <div class="job-meta" style="margin-bottom: 1.5rem;">
+        <div class="job-meta-item">📍 {{ job.location }}</div>
+        <div class="job-meta-item">📅 Posted: {{ job.posted_at|date:"M d, Y" }}</div>
+    </div>
+    
+    <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid #ecf0f1;">
+        <h2 style="color: #2c3e50; margin-bottom: 1rem;">Job Description</h2>
+        <div style="line-height: 1.8; color: #555; white-space: pre-wrap;">{{ job.description }}</div>
+    </div>
+    
+    <div>
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">Apply for This Position</h2>
+        
+        {% if form.non_field_errors %}
+        <div class="form-errors">
+            <strong>Error:</strong>
+            <ul>
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <form method="POST" enctype="multipart/form-data" action="{% url 'apply' job.pk %}">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="form-errors" style="margin-top: 0.5rem;">
+                        <ul>
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <small style="color: #7f8c8d; display: block; margin-top: 0.25rem;">
+                        {{ field.help_text|safe }}
+                    </small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Submit Application</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
