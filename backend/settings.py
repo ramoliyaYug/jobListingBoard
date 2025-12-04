@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*",          # allow all HTTPS (Django 4.1+ supports wildcard)
+    "http://*",           # optional for local testing
+    "https://joblistingboard.onrender.com"
+]
 
 # Application definition
 
